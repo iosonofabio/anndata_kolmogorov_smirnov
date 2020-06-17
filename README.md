@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/iosonofabio/anndata_kolmogorov_smirnov.svg?branch=master)](https://travis-ci.org/iosonofabio/anndata_kolmogorov_smirnov)
+
 # anndata_kolmogorov_smirnov
 Kolmogorov Smirnov test on all genes between two AnnData objects
 
