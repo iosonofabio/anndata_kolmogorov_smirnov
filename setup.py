@@ -52,7 +52,7 @@ pkgname = 'anndataks'
 
 # Get version
 with open('anndataks/_version.py') as fversion:
-    version = fversion.readline().rstrip().split(' ')[-1]
+    version = fversion.readline().rstrip().split(' ')[-1][1:-1]
 
 
 # Setup function

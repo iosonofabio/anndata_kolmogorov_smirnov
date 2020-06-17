@@ -5,6 +5,7 @@ if [ -z $TRAVIS_TAG ]; then
   exit 0
 fi
 
+PKGNAME="anndataks"
 PKGVER=$(cat anndataks/_version.py | cut -d' ' -f3 | cut -d"'" -f2)
 
 TAG1=$(echo $TRAVIS_TAG | cut -f1 -d_)
@@ -17,12 +18,6 @@ fi
 if [ $TAG1 != 'release' ] || [ $TAG2 != $PKGVER ]; then
   echo 'No release tag or wrong version, exit'
   exit 0;
-fi
-
-# do not deploy on linux outside of manylinux
-if [ -z $DOCKER_IMAGE ] && [ $TRAVIS_OS_NAME != 'osx' ]; then
-  echo 'Not inside manylinux docker image and not OSX, exit'
-  exit 0
 fi
 
 # deploy onto pypitest unless you have no RC
@@ -39,54 +34,15 @@ else
   exit 1
 fi
    
-if [ $DOCKER_IMAGE ]; then
-  # Wheels are already tested in docker image
-  docker run -e TWINE_REPOSITORY="$TWINE_REPOSITORY" -e TWINE_USERNAME="$TWINE_USERNAME" -e TWINE_PASSWORD="$TWINE_PASSWORD" --rm -v $(pwd):/io $DOCKER_IMAGE /io/deploywheels.sh 
+echo "Deploying to pip using twine"
+echo "TWINE_REPOSITORY=$TWINE_REPOSITORY"
+echo "TWINE_USERNAME=$TWINE_USERNAME"
+echo "TWINE_PASSWORD=$TWINE_PASSWORD"
+pip --version
+pip install twine
 
-elif [ $TRAVIS_OS_NAME == 'osx' ]; then
-  # OSX deployment
-  echo "Deploying for OSX"
-  # Prepare to exit upon failure
-  set -e  
+# Build source
+python setup.py sdist --dist-dir dist/
 
-  # Only deploy on 10.14 to ensure 10.9+ compatibility and Mojave header/linker changes
-  osx_version=$(sw_vers -productVersion)
-  echo "OSX version: $osx_version"
-  osx_ver1=$(echo $osx_version | cut -d. -f1)
-  osx_ver2=$(echo $osx_version | cut -d. -f2)
-  if [ $osx_ver1 -lt 10 ] || [ $osx_ver2 -lt 14 ]; then
-    echo "OSX version not for deployment: $osx_version"
-    exit 1
-  fi
-
-  echo "TWINE_REPOSITORY=$TWINE_REPOSITORY"
-  echo "TWINE_USERNAME=$TWINE_USERNAME"
-  echo "TWINE_PASSWORD=$TWINE_PASSWORD"
-  export PATH="$HOME/miniconda/bin:$PATH"
-  source $HOME/miniconda/bin/activate
-  conda activate travis
-
-  pip --version
-  pip install twine
-
-  # Figure out architecture string
-  PYVER=$(echo $CONDA_PY | sed 's/\.//')
-  PYARCH=cp${PYVER}-cp${PYVER}
-
-  echo "Contents of wheelhouse:"
-  ls wheelhouse
-  TWINE_WHEEL=$(ls wheelhouse/anndataks-${PKGVER}-${PYARCH}*.whl)
-  echo "TWINE_WHEEL=$TWINE_WHEEL"
-
-  echo "Uploading..."
-  twine upload  --repository-url "${TWINE_REPOSITORY}" -u "${TWINE_USERNAME}" -p "${TWINE_PASSWORD}" "${TWINE_WHEEL}"
-  if [ $? != 0 ]; then
-    echo "Upload failed" 
-    exit 1
-  fi
-  echo "Upload complete"
-
-else
-  echo "No DOCKER_IMAGE and not OSX, we should not be here!"
-  exit 1
-fi
+# Upload source
+twine upload --repository-url "${TWINE_REPOSITORY}" -u "${TWINE_USERNAME}" -p "${TWINE_PASSWORD}" dist/${PKGNAME}-${PKGVER}.tar.gz
