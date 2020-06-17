@@ -26,8 +26,8 @@ def compare(adata1, adata2, log1p=False):
         of 2 over 1.
 
     '''
-    X1 = adata1
-    X2 = adata2
+    X1 = adata1.X
+    X2 = adata2.X
 
     m1, m2 = X1.shape[1], X2.shape[1]
     if m1 != m2:
@@ -40,15 +40,16 @@ def compare(adata1, adata2, log1p=False):
         X2 = X2.tocsc()
 
     # Get the numbers out of the aux function
-    ress = []
-    for i in range(m1):
-        res = ks_2samp(X1[:, i], X2[:, i])
-        ress.append(res)
-
     ress = pd.DataFrame(
-            res, index=adata1.var_names,
-            columns=('statistic', 'value', 'pvalue'),
+            np.zeros((m1, 3), np.float64),
+            index=adata1.var_names,
+            columns=['statistic', 'value', 'pvalue'],
             )
+    for i in range(m1):
+        data1 = X1[:, i]
+        data2 = X2[:, i]
+        res = ks_2samp(data1, data2)
+        ress.iloc[i] = res
 
     # Compute averages and log2 fold changes
     avg1 = X1.mean(axis=0)

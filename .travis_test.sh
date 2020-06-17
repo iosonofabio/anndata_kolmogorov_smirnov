@@ -9,22 +9,21 @@ if [ "$TRAVIS_OS_NAME" == 'osx' ]; then
   export PATH="$HOME/miniconda/bin:$PATH"
   source $HOME/miniconda/bin/activate
   conda activate travis
-  #PYTHON="$HOME/miniconda/bin/python$CONDA_PY"
   PYTHON=$(which python)
+  PYTEST=$(which pytest)
 else
   PYTHON=${PYTHON:-python}
+  PYTEST=${PYTEST:-"pytest"}
 fi
 
 echo "python: ${PYTHON}"
 
 echo 'Running tests...'
 
-#echo 'General tests...'
-#${PYTHON} test/test_general.py
-#if [ $? != 0 ]; then
-#    exit 1
-#fi
+# LOCAL TESTING:
+# PYTHONPATH=$(pwd)/build/lib:PYTHONPATH pytest -rxXs test
 
-echo "No tests yet"
+${PYTEST} "test"
+
 echo 'done!'
 

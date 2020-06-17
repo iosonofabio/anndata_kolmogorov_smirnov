@@ -395,8 +395,9 @@ def ks_2samp(data1, data2, alternative='two-sided', mode='auto'):
     sign = 1 if cddiffs[idx_d] >= 0 else -1
 
     # Track down the two values at that index
-    idx1 = idx_cdf1[idx_d]
-    idx2 = idx_cdf2[idx_d]
+    # The -1 is because we used 'right' in sortedsearch
+    idx1 = idx_cdf1[idx_d] - 1
+    idx2 = idx_cdf2[idx_d] - 1
     # Get the values of the distributions at those indices and the midpoint,
     # as a way to deal with short arrays
     val1 = data1[idx1]
