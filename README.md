@@ -4,7 +4,13 @@
 Kolmogorov Smirnov test on all genes between two AnnData objects
 
 ```python
+import anndata
 import anndataks
+
+adata1 = anndata.read_loom('dataset1.loom')
+adata2 = anndata.read_loom('dataset2.loom')
+
+# Both must have the same var_names
 
 results = anndataks.compare(adata1, adata2, log1p=2)
 
