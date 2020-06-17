@@ -4,6 +4,9 @@ if [ -z $TRAVIS_TAG ]; then
   echo 'No TRAVIS_TAG, exit'
   exit 0
 fi
+
+PKGVER=$(cat cat anndataks/_version.py | cut -d' ' -f3 | cut -d"'" -f2)
+
 TAG1=$(echo $TRAVIS_TAG | cut -f1 -d_)
 TAG2=$(echo $TRAVIS_TAG | cut -f2 -d_)
 TAG3=$(echo $TRAVIS_TAG | cut -f3 -d_)
@@ -11,7 +14,7 @@ if [ -z $TAG2 ]; then
   echo 'No TAG2, exit'
   exit 0;
 fi
-if [ $TAG1 != 'release' ] || [ $TAG2 != $(cat VERSION) ]; then
+if [ $TAG1 != 'release' ] || [ $TAG2 != $PKGVER ]; then
   echo 'No release tag or wrong version, exit'
   exit 0;
 fi
@@ -56,7 +59,6 @@ elif [ $TRAVIS_OS_NAME == 'osx' ]; then
     exit 1
   fi
 
-  HTSEQ_VERSION=$(cat VERSION)
   echo "TWINE_REPOSITORY=$TWINE_REPOSITORY"
   echo "TWINE_USERNAME=$TWINE_USERNAME"
   echo "TWINE_PASSWORD=$TWINE_PASSWORD"
@@ -73,7 +75,7 @@ elif [ $TRAVIS_OS_NAME == 'osx' ]; then
 
   echo "Contents of wheelhouse:"
   ls wheelhouse
-  TWINE_WHEEL=$(ls wheelhouse/HTSeq-${HTSEQ_VERSION}-${PYARCH}*.whl)
+  TWINE_WHEEL=$(ls wheelhouse/anndataks-${PKGVER}-${PYARCH}*.whl)
   echo "TWINE_WHEEL=$TWINE_WHEEL"
 
   echo "Uploading..."

@@ -5,7 +5,7 @@ stages:
   - Deploy
   - Test_deployed
 
-matrix:
+jobs:
  include: 
 
     # Test related
