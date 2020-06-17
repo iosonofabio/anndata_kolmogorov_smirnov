@@ -5,6 +5,8 @@ Kolmogorov Smirnov test on all genes between two AnnData objects
 import anndataks
 
 results = anndataks.compare(adata1, adata2, log1p=2)
+
+# log1p=2 means: the data is already pseudocounted and logged in base 2
 ```
 
 **NOTE**: This implementation is based on `scipy.stats.ks_2samp` with a few improvements:
