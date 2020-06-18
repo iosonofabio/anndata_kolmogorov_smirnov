@@ -7,7 +7,10 @@ content:    Setup script for anndataks
 '''
 import sys
 import os
-from distutils.log import INFO as logINFO
+
+
+pkgname = 'anndataks'
+
 
 if ((sys.version_info[0] < 3) or
    (sys.version_info[0] == 3 and sys.version_info[1] < 5)):
@@ -46,14 +49,9 @@ except ImportError:
             ]
     )
 
-
-# Set name
-pkgname = 'anndataks'
-
 # Get version
-with open('anndataks/_version.py') as fversion:
+with open(os.path.join(pkgname, '_version.py')) as fversion:
     version = fversion.readline().rstrip().split(' ')[-1][1:-1]
-
 
 # Setup function
 setup(name=pkgname,

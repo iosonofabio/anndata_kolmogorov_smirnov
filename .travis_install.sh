@@ -34,13 +34,14 @@ elif [ $TRAVIS_BUILD_STAGE_NAME == "Test_deployed" ]; then
     exit 1;
   fi
 
- # deploy onto pypitest unless you have no RC
+ # install from pypitest unless you have no RC
+ PKGNAME=$(grep 'pkgname = ' setup.py | cut -d"'" -f2)
  if [ -z $TAG3 ]; then
    echo "Installing remote version from pypi"
-   pip install -v 'anndataks'
+   pip install -v "${PKGNAME}"
  elif [ ${TAG3:0:2} == 'RC' ]; then
    echo "Installing remote version from testpypi"
-   pip install -v --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple 'anndataks'
+   pip install -v --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple "${PKGNAME}"
  else
    echo "Tag not recognized: $TRAVIS_TAG"
    exit 1

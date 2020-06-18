@@ -1,10 +1,4 @@
 #!/bin/bash
-# Wheels are already tested in docker image
-if [ $DOCKER_IMAGE ]; then
-  docker run --rm -v $(pwd):/io $DOCKER_IMAGE /io/testwheels.sh
-  exit $?
-fi
-
 if [ "$TRAVIS_OS_NAME" == 'osx' ]; then
   export PATH="$HOME/miniconda/bin:$PATH"
   source $HOME/miniconda/bin/activate
@@ -24,6 +18,3 @@ echo 'Running tests...'
 # PYTHONPATH=$(pwd)/build/lib:PYTHONPATH pytest -rxXs test
 
 ${PYTEST} "test"
-
-echo 'done!'
-

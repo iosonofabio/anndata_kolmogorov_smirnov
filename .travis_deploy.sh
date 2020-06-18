@@ -5,8 +5,8 @@ if [ -z $TRAVIS_TAG ]; then
   exit 0
 fi
 
-PKGNAME="anndataks"
-PKGVER=$(cat anndataks/_version.py | cut -d' ' -f3 | cut -d"'" -f2)
+PKGNAME=$(grep 'pkgname = ' setup.py | cut -d"'" -f2)
+PKGVER=$(cat ${PKGNAME}/_version.py | cut -d"'" -f2)
 
 TAG1=$(echo $TRAVIS_TAG | cut -f1 -d_)
 TAG2=$(echo $TRAVIS_TAG | cut -f2 -d_)

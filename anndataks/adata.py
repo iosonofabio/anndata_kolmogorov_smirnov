@@ -16,7 +16,7 @@ def compare(adata1, adata2, log1p=False):
         adata2 (AnnData): The second dataset
         log1p (False or float): Whether the datasets are already pseudocounted
            and logged. If a float, it should specify the base of the log
-    
+
     Returns:
         pd.DataFrame: Rows are var_names, columns are the KS statistic (with
         sign > 0 if adata2 had a higher expression at the key spot), the
