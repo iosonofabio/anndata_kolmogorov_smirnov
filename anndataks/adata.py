@@ -8,7 +8,7 @@ import scipy.sparse
 from .stats import ks_2samp
 
 
-def compare(adata1, adata2, log1p=False):
+def compare(adata1, adata2, log1p=False, alternative='two-sided', mode='auto'):
     '''Compare two AnnData gene expression by KS test
 
     Args:
@@ -16,6 +16,18 @@ def compare(adata1, adata2, log1p=False):
         adata2 (AnnData): The second dataset
         log1p (False or float): Whether the datasets are already pseudocounted
            and logged. If a float, it should specify the base of the log
+        alternative : {'two-sided', 'less', 'greater'}, optional
+            Defines the alternative hypothesis.
+            The following options are available (default is 'two-sided'):
+              * 'two-sided'
+              * 'less': one-sided, see explanation in Notes
+              * 'greater': one-sided, see explanation in Notes
+        mode : {'auto', 'exact', 'asymp'}, optional
+            Defines the method used for calculating the p-value.
+            The following options are available (default is 'auto'):
+              * 'auto' : use 'exact' for small size arrays, 'asymp' for large
+              * 'exact' : use exact distribution of test statistic
+              * 'asymp' : use asymptotic distribution of test statistic
 
     Returns:
         pd.DataFrame: Rows are var_names, columns are the KS statistic (with
@@ -48,7 +60,7 @@ def compare(adata1, adata2, log1p=False):
     for i in range(m1):
         data1 = X1[:, i]
         data2 = X2[:, i]
-        res = ks_2samp(data1, data2)
+        res = ks_2samp(data1, data2, alternative=alternative, mode=mode)
         ress.iloc[i] = res
 
     # Compute averages and log2 fold changes
