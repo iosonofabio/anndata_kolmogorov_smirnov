@@ -431,7 +431,8 @@ def ks_2samp(data1, data2, alternative='two-sided', mode='auto'):
         # The product n1*n2 is large.  Use Smirnov's asymptoptic formula.
         if alternative == 'two-sided':
             en = n1 * n2 / (n1 + n2)
-            prob = distributions.kstwo.sf(d, np.round(en))
+            #prob = distributions.kstwo.sf(d, np.round(en))
+            prob = distributions.kstwobign.sf(d * np.sqrt(np.round(en)))
         else:
             m, n = max(n1, n2), min(n1, n2)
             z = np.sqrt(m*n/(m+n)) * d

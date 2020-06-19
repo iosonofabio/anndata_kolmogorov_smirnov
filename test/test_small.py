@@ -21,6 +21,15 @@ def test_ks2samp():
     assert(res[2] == 0.9307359307359307)
 
 
+def test_ks2samp_asymp():
+    data1 = np.array([0, 1, 2, 3, 3, 4], np.float32)
+    data2 = np.array([0, 3, 3, 4, 6, 6], np.float32)
+    res = anndataks.ks_2samp(data1, data2, mode='asymp')
+    assert(np.abs(res[0] - 0.3333333333333333) < 1e-5)
+    assert(res[1] == 1.0)
+    assert(res[2] == 0.8927783372501085)
+
+
 def test_compare():
     X1 = np.array([
         [0, 1],
