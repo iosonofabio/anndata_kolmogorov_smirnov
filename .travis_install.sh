@@ -8,7 +8,11 @@ fi
 # We do not need to actually install anything when deploying because
 # it is a pure python package
 if [ $TRAVIS_BUILD_STAGE_NAME == "Test" ]; then
-  pip install -v '.'
+  if [ $TRAVIS_OS_NAME == 'osx' ]; then
+    python setup.py install
+  else
+    pip install -v '.'
+  fi
   if [ $? != 0 ]; then
       exit 1
   fi
