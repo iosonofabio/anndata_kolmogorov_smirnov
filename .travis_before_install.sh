@@ -32,7 +32,7 @@ elif [ $TRAVIS_OS_NAME == 'osx' ]; then
   pip --version
 
   # Use recent numpy/scipy/pandas from conda
-  conda install -c conda-forge numpy scipy pandas
+  conda install -y -c conda-forge numpy scipy pandas anndata
 
 else
   echo "OS not recognized: $TRAVIS_OS_NAME"
