@@ -5,3 +5,4 @@
 from ._version import version
 from .stats import ks_2samp
 from .adata import compare
+from .config import rc

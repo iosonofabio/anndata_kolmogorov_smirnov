@@ -362,6 +362,7 @@ def ks_2samp(data1, data2, alternative='two-sided', mode='auto'):
         data1 = data1.compressed()
     if np.ma.is_masked(data2):
         data2 = data2.compressed()
+
     data1 = np.sort(data1)
     data2 = np.sort(data2)
     n1 = data1.shape[0]
@@ -380,9 +381,9 @@ def ks_2samp(data1, data2, alternative='two-sided', mode='auto'):
     cdf2 = idx_cdf2 / n2
     cddiffs = cdf1 - cdf2
     # idx_ keep track of indices of cdf1, cdf2, cddiffs
-    idx_minS = -np.argmin(cddiffs)
+    idx_minS = np.argmin(cddiffs)
     idx_maxS = np.argmax(cddiffs)
-    minS = cddiffs[idx_minS]
+    minS = -cddiffs[idx_minS]
     maxS = cddiffs[idx_maxS]
     alt2Dvalue = {
         'less': (idx_minS, minS),
@@ -432,7 +433,7 @@ def ks_2samp(data1, data2, alternative='two-sided', mode='auto'):
         if alternative == 'two-sided':
             en = n1 * n2 / (n1 + n2)
             #prob = distributions.kstwo.sf(d, np.round(en))
-            prob = distributions.kstwobign.sf(d * np.sqrt(np.round(en)))
+            prob = distributions.kstwobign.sf(d * np.sqrt(en))
         else:
             m, n = max(n1, n2), min(n1, n2)
             z = np.sqrt(m*n/(m+n)) * d
