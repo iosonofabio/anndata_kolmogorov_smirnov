@@ -40,6 +40,9 @@ def compare(adata1, adata2, log1p=False, alternative='two-sided', mode='auto'):
         dataset (both logged 2 with pseudocount of 1), and the log2 fold change
         of 2 over 1.
 
+    NOTE: if the input data is not logged, the average columns indicate
+    arithmetic means, otherwise they indicate geometric means.
+
     '''
     if rc['use_experimental_ks_2samp']:
         from .stats import ks_2samp
@@ -93,7 +96,7 @@ def compare(adata1, adata2, log1p=False, alternative='two-sided', mode='auto'):
         res = ks_2samp(data1, data2, alternative=alternative, mode=mode)
         ress.iloc[i] = res
 
-    # Compute averages and log2 fold changes
+    # Compute averages
     avg1 = X1.mean(axis=0)
     avg2 = X2.mean(axis=0)
     if scipy.sparse.issparse(X1):
@@ -101,16 +104,16 @@ def compare(adata1, adata2, log1p=False, alternative='two-sided', mode='auto'):
     if scipy.sparse.issparse(X2):
         avg2 = np.asarray(avg2).reshape(-1)
 
-    if log1p is False:
-        avg1 = np.log2(avg1 + 1)
-        avg2 = np.log2(avg2 + 1)
-    elif log1p not in (True, 2):
-        avg1 /= np.log2(log1p)
-        avg2 /= np.log2(log1p)
-
-    log2_fc = avg2 - avg1
     ress['avg1'] = avg1
     ress['avg2'] = avg2
+
+    # Compute log2 fold changes
+    if log1p is False:
+        log2_fc = np.log2(avg2 + 1) - np.log2(avg1 + 1)
+    elif log1p not in (True, 2):
+        log2_fc = (avg2 - avg1) / np.log2(log1p)
+    else:
+        log2_fc = avg2 - avg1
     ress['log2_fold_change'] = log2_fc
 
     return ress
